@@ -4,6 +4,19 @@ const PORT = 4000;
 
 const app = express();
 
+const gossipMiddleware = (req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+};
+
+const handleHome = (req, res) => {
+  return res.send("hello");
+};
+
+app.use(gossipMiddleware);
+//get은 request를 처리함.
+app.get("/", handleHome);
+
 const handleListening = () =>
   console.log(`Server listening on port http://localhost:${PORT}`);
 
