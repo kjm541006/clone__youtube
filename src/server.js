@@ -25,7 +25,7 @@ app.use("/users", userRouter);
 //   return res.send("Welcome to the private");
 // };
 
-//get은 request를 처리함.
+//get은 request를 처리함
 
 const handleListening = () =>
   console.log(`Server listening on port http://localhost:${PORT}`);
