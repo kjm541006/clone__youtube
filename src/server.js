@@ -12,6 +12,7 @@ const app = express();
 const logger = morgan("combined");
 
 app.set("view engine", "pug");
+app.set("views", process.cwd() + "/src/views");
 //use는 모든곳에서 적용
 app.use(logger);
 app.use("/", globalRouter);
