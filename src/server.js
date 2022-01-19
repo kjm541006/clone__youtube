@@ -11,9 +11,9 @@ const PORT = 4000; //관습, 높은숫자는 비어있을 확률 높음
 const app = express();
 const logger = morgan("combined");
 
+app.set("view engine", "pug");
 //use는 모든곳에서 적용
 app.use(logger);
-
 app.use("/", globalRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
