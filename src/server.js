@@ -9,7 +9,7 @@ import videoRouter from "./routers/videoRouter";
 const PORT = 4000; //관습, 높은숫자는 비어있을 확률 높음
 
 const app = express();
-const logger = morgan("combined");
+const logger = morgan("common");
 
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
