@@ -1,7 +1,9 @@
-doctype html 
-html(lang = "ko")
-    head 
-        title Wetube 
-    body 
-        h1 Welcome To Wetube
-    include partials/footer.pug
+extends base.pug
+include mixins/video
+
+block content 
+    each video in videos
+        +video(video)
+
+    else
+        li Sorry nothing found

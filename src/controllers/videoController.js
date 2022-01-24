@@ -1,9 +1,67 @@
-import res from "express/lib/response";
+import Video from "../models/Video";
 
-export const trending = (req, res) => res.render("home");
+/*callback
+Video.find({}, (error, videos) => {
+    console.log("errors", error);
+    console.log("videos", videos);
+  });
+*/
+export const home = async (req, res) => {
+  const videos = await Video.find({});
+  return res.render("home", { pageTitle: "Home", videos });
+};
 
-export const watch = (req, res) => res.render("watch");
-export const edit = (req, res) => res.send("Edit");
+export const watch = async (req, res) => {
+  const { id } = req.params; // ==> const id = req.params.id;(ES6)
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "Video Not Found." });
+  }
+  return res.render("watch", { pageTitle: video.title, video });
+};
+
+export const getEdit = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "Video Not Found." });
+  }
+  res.render("edit", { pageTitle: `Edit ${video.title}`, video });
+};
+
+export const postEdit = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, hashtags } = req.body;
+  const video = await Video.exists({ _id: id });
+  if (!video) {
+    return res.render("404", { pageTitle: "Video Not Found." });
+  }
+  await Video.findByIdAndUpdate(id, {
+    title,
+    description,
+    hashtags: Video.formatHashtags(hashtags),
+  });
+  return res.redirect(`/videos/${id}`);
+};
+
+export const getUpload = (req, res) =>
+  res.render("upload", { pageTitle: "Upload Video" });
+
+export const postUpload = async (req, res) => {
+  const { title, description, hashtags } = req.body;
+  try {
+    await Video.create({
+      title,
+      description,
+      hashtags: Video.formatHashtags(hashtags),
+    });
+    return res.redirect("/");
+  } catch (error) {
+    return res.render("upload", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
+    });
+  }
+};
+
 export const deleteVideo = (req, res) => res.send("Delete Video");
-export const search = (req, res) => res.send("Search");
-export const upload = (req, res) => res.send("Upload");

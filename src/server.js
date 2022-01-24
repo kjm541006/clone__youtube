@@ -1,20 +1,17 @@
-import "./db";
-import "./models/Video";
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 
-const PORT = 4000; //관습, 높은숫자는 비어있을 확률 높음
-
 const app = express();
-const logger = morgan("common");
+const logger = morgan("tiny");
 
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 //use는 모든곳에서 적용
 app.use(logger);
+app.use(express.urlencoded({ extended: true }));
 app.use("/", globalRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
@@ -29,7 +26,4 @@ app.use("/users", userRouter);
 // };
 
 //get은 request를 처리함
-
-const handleListening = () => console.log(`Server listening on http://localhost:${PORT}`);
-
-app.listen(PORT, handleListening);
+export default app;
