@@ -21,7 +21,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "mongoose": "^6.1.6",
+    "mongoose": "^6.2.1",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "pug": "^3.0.2"

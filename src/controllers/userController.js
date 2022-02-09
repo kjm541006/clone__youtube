@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 import res from "express/lib/response";
 import { token } from "morgan";
+import { removeAllListeners } from "nodemon";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -47,8 +48,7 @@ export const postJoin = async (req, res) => {
   }
 };
 
-export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "login" });
+export const getLogin = (req, res) => res.render("login", { pageTitle: "login" });
 
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -150,7 +150,78 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 
-export const edit = (req, res) => res.send("Edit User");
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pageTitle: "edit-profile" });
+};
+export const postEdit = async (req, res) => {
+  const {
+    body: { name, email, username, location },
+    session: {
+      user: { _id },
+    },
+  } = req;
+
+  const findUsername = await User.findOne({ username });
+  const findEmail = await User.findOne({ email });
+  if (
+    (findUsername != null && findUsername._id != _id) ||
+    (findEmail != null && findEmail._id != _id)
+  ) {
+    return res.render("edit-profile", {
+      pageTitle: "Edit Profile",
+      errorMessage: "User already Exist",
+    });
+  }
+
+  const updateUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name: name,
+      username: username,
+      email: email,
+      location: location,
+    },
+    { new: true }
+  );
+  req.session.user = updateUser;
+
+  res.redirect("/users/edit");
+};
+
+export const getChangePassword = (req, res) => {
+  if (req.session.user.socialOnly === true) {
+    return res.redirect("/");
+  }
+  res.render("change-password", { pageTitle: "Change Password" });
+};
+
+export const postChangePassword = async (req, res) => {
+  const {
+    body: { oldPassword, newPassword, newPasswordConfirm },
+    session: {
+      user: { _id, password },
+    },
+  } = req;
+  const ok = await bcrypt.compare(oldPassword, password);
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "Current password is incorrect",
+    });
+  }
+  if (newPassword !== newPasswordConfirm) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "Password does not match",
+    });
+  }
+  const user = await User.findById(_id);
+  user.password = newPassword;
+  await user.save();
+  req.session.user.password = user.password;
+  return res.redirect("/");
+};
+
 export const remove = (req, res) => res.send("Remove User");
 export const logout = (req, res) => {
   req.session.destroy();
