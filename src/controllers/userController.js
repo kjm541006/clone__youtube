@@ -48,7 +48,8 @@ export const postJoin = async (req, res) => {
   }
 };
 
-export const getLogin = (req, res) => res.render("login", { pageTitle: "login" });
+export const getLogin = (req, res) =>
+  res.render("login", { pageTitle: "login" });
 
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -71,7 +72,7 @@ export const postLogin = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user;
   //console.log(req.session);
-  res.redirect("/");
+  res.render("home", { pageTitle: "Home" });
 };
 
 export const startGithubLogin = (req, res) => {
