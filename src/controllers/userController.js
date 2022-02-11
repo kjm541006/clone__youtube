@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 import res from "express/lib/response";
@@ -72,7 +73,7 @@ export const postLogin = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user;
   //console.log(req.session);
-  res.render("home", { pageTitle: "Home" });
+  res.redirect("/");
 };
 
 export const startGithubLogin = (req, res) => {
@@ -154,14 +155,15 @@ export const finishGithubLogin = async (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "edit-profile" });
 };
+
 export const postEdit = async (req, res) => {
   const {
-    body: { name, email, username, location },
     session: {
-      user: { _id },
+      user: { _id, avatarUrl },
     },
+    body: { name, email, username, location },
+    file,
   } = req;
-
   const findUsername = await User.findOne({ username });
   const findEmail = await User.findOne({ email });
   if (
@@ -173,10 +175,10 @@ export const postEdit = async (req, res) => {
       errorMessage: "User already Exist",
     });
   }
-
-  const updateUser = await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
+      avatarUrl: file ? file.path : avatarUrl,
       name: name,
       username: username,
       email: email,
@@ -184,8 +186,7 @@ export const postEdit = async (req, res) => {
     },
     { new: true }
   );
-  req.session.user = updateUser;
-
+  req.session.user = updatedUser;
   res.redirect("/users/edit");
 };
 
@@ -227,4 +228,17 @@ export const remove = (req, res) => res.send("Remove User");
 export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
+};
+
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id).populate("videos");
+  console.log(user);
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found" });
+  }
+  return res.render("profile", {
+    pageTitle: `${user.name}의 profile`,
+    user,
+  });
 };
