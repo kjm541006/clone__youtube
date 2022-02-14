@@ -1,5 +1,4 @@
 import User from "../models/User";
-import Video from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 import res from "express/lib/response";
@@ -7,18 +6,17 @@ import { token } from "morgan";
 import { removeAllListeners } from "nodemon";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
+
 export const postJoin = async (req, res) => {
   const { name, username, email, password, password1, location } = req.body;
   const usernameExists = await User.exists({ username });
   const emailExists = await User.exists({ email });
-
   if (password !== password1) {
     return res.status(400).render("join", {
       pageTitle: "Join",
       errorMessage: "password does not match",
     });
   }
-
   if (usernameExists) {
     return res.status(400).render("join", {
       pageTitle: "Join",
@@ -39,9 +37,10 @@ export const postJoin = async (req, res) => {
       password,
       location,
     });
-    res.redirect("/login");
+    return res.redirect("/login");
   } catch (error) {
-    return res.render("upload", {
+    console.log(error);
+    return res.status(400).render("join", {
       pageTitle: "Join",
       errorMessage: error._message,
     });
