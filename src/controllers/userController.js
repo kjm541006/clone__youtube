@@ -8,7 +8,6 @@ import { removeAllListeners } from "nodemon";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
-  //console.log(req.body);
   const { name, username, email, password, password1, location } = req.body;
   const usernameExists = await User.exists({ username });
   const emailExists = await User.exists({ email });
