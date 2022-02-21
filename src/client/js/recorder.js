@@ -4,10 +4,18 @@ const video = document.getElementById("preview");
 let stream;
 let recorder;
 
+const handleDownload = () => {
+  const a = document.createElement("a");
+  a.href = videoFile;
+  a.download = "MyRecording.webm";
+  document.body.appendChild(a);
+  a.click();
+};
+
 const handleStop = () => {
-  startBtn.innerText = "Start Recording";
+  startBtn.innerText = "Download Recording";
   startBtn.removeEventListener("click", handleStop);
-  startBtn.addEventListener("click", handleStart);
+  startBtn.addEventListener("click", handleDownload);
   recorder.stop();
 };
 
