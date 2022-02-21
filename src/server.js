@@ -14,6 +14,7 @@ const logger = morgan("tiny");
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 //use는 모든곳에서 적용
+
 app.use(logger);
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,6 +34,11 @@ app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 app.use("/api", apiRouter);
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
 
 // //last controller에는 관습적으로 next를 쓰지않음
 
