@@ -12,6 +12,7 @@ const fullScreenBtn = document.getElementById("fullScreen");
 const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
+const textarea = document.querySelector("textarea");
 
 let controlsTimeout = null;
 let volumeValue = 0.5;
@@ -139,7 +140,7 @@ const handleMouseLeave = () => {
 };
 
 const handlePlayKeydown = (event) => {
-  if (event.key === " ") handlePlayClick();
+  if (event.key === " " && event.target !== textarea) handlePlayClick();
   handleMouseMove();
 };
 

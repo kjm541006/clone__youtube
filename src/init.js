@@ -3,6 +3,7 @@ import "dotenv/config";
 import "./db";
 import "./models/Video";
 import "./models/User";
+import "./models/Comment";
 import app from "./server";
 
 const PORT = 4000; //4000 관습, 높은숫자는 비어있을 확률 높음
