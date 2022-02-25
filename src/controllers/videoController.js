@@ -10,9 +10,7 @@ Video.find({}, (error, videos) => {
   });
 */
 export const home = async (req, res) => {
-  const videos = await Video.find({})
-    .sort({ createdAt: "desc" })
-    .populate("owner");
+  const videos = await Video.find({}).sort({ createdAt: "desc" }).populate("owner");
   return res.render("home", { pageTitle: "Home", videos });
 };
 
@@ -154,5 +152,5 @@ export const createComment = async (req, res) => {
   });
   video.comments.push(comment._id);
   video.save();
-  return res.sendStatus(201);
+  return res.status(201).json({ newCommentId: comment._id });
 };
