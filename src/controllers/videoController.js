@@ -17,7 +17,6 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
   const { id } = req.params; // ==> const id = req.params.id;(ES6)
   const video = await Video.findById(id).populate("owner").populate("comments"); // ==> populate는 mongoose기능 (ref:User)
-  console.log(video);
   if (!video) {
     return res.render("404", { pageTitle: "Video Not Found." });
   }
@@ -69,7 +68,6 @@ export const postUpload = async (req, res) => {
   const {
     user: { _id },
   } = req.session;
-  console.log(req.files);
   const { video, thumb } = req.files;
   const { title, description, hashtags } = req.body;
   try {
@@ -82,7 +80,6 @@ export const postUpload = async (req, res) => {
       hashtags: Video.formatHashtags(hashtags),
     });
     const user = await User.findById(_id);
-    console.log("This is new Video" + newVideo);
     user.videos.push(newVideo._id);
     user.save();
     return res.redirect("/");
