@@ -7,7 +7,7 @@ import "./models/User";
 import "./models/Comment";
 import app from "./server";
 
-const PORT = 4000; //4000 관습, 높은숫자는 비어있을 확률 높음
+const PORT = process.env.PORT || 4000;
 
 const handleListening = () =>
   console.log(`✅ Server listening on http://localhost:${PORT}`);
