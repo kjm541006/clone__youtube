@@ -1,3 +1,4 @@
 # 유튜브 따라하기
 
-https://nomadcoders.co/wetube
+
+클론코딩 by https://nomadcoders.co/wetube
